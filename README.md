@@ -1,100 +1,152 @@
 # Procedural Farmhouse Generator for Minecraft
 
-A Python-based procedural content generation system that creates unique, nature-integrated farmhouses in Minecraft using the GDPC package.
+A procedural content generation project that builds randomized farmhouses in Minecraft Java Edition using Python and GDPC.
 
-## Project Overview
+The generator analyzes terrain, selects a building location, and constructs a furnished farmhouse with a glass roof, outdoor decorations, and a separate washroom connected by a cobblestone path.
 
-This project implements a procedural generation system that creates farmhouses in Minecraft with the following features:
-- Terrain analysis to find suitable building locations
-- Randomized dimensions and materials for unique structures
-- Transparent mirror surfaces on roofs and walls for sky viewing
-- Integrated washroom with automated doors
-- L-shaped connecting path between main house and washroom
-- Interior furnishings including beds, crafting table, chest, bookshelves, TV, and heater
-- Exterior decorations including flower gardens and lighting
+![Generated farmhouse](Front%20%281%29.png)
 
 ## Features
 
-### Terrain Analysis
-- Evaluates build areas (typically 100x100 blocks) using GDPC's MOTION_BLOCKING_NO_LEAVES heightmap
-- Identifies flat regions with natural blocks (grass, dirt, stone)
-- Calculates height differences to ensure suitable building locations
+- **Terrain analysis:** Searches for suitable ground using heightmaps and allowed terrain blocks.
+- **Randomized architecture:** Varies house dimensions, foundation materials, and wall materials.
+- **Glass roof:** Provides an open view of the sky with sea-lantern lighting.
+- **Furnished interior:** Includes bed blocks, bookshelves, a crafting table, a chest, and decorative features.
+- **Pressure-plate entrances:** Adds doors with pressure plates.
+- **Separate washroom:** Randomly places a washroom on the left or right of the house.
+- **Outdoor details:** Generates a flower garden, exterior lighting, and a connecting path.
+- **Buffered construction:** Batches block placement through GDPC.
 
-### Randomization and Variation
-- Randomized dimensions (width: 10-20 blocks, depth: 8-16 blocks, wall height: 4-8 blocks)
-- Random material selection for foundations and walls
-- Transparent glass roofs for mirror-like effects
-- Random washroom placement (left or right side)
+## How It Works
 
-### Integration with Environment
-- Selective clearing that preserves the natural landscape
-- Foundation filling to ensure structure stability
-- Interior and exterior decorations for a believable living space
+1. Retrieve the configured Minecraft build area.
+2. Load a world slice and its `MOTION_BLOCKING_NO_LEAVES` heightmap.
+3. Select randomized dimensions and materials.
+4. Search candidate locations for suitable ground and low height variation.
+5. Prepare the footprint and construct the house.
+6. Add furnishings, garden decorations, and lighting.
+7. Build the washroom and connecting path.
+8. Flush buffered changes to the Minecraft world.
 
-## Implementation
+If no suitable location is found, the script falls back to the build area's origin.
 
-The system is built using:
-- Python
-- GDPC (Generative Design in Minecraft Python Client)
-- Minecraft Java Edition
+## Generation Settings
 
-## Results
-
-Each execution produces a unique farmhouse that:
-- Adapts to the natural terrain
-- Features randomized dimensions and materials
-- Includes transparent surfaces for sky viewing
-- Contains an attached washroom with automated doors
-- Provides interior furnishings and exterior decorations
-
-## Installation
-
-1. Install Python 3.7 or higher
-2. Install Minecraft Java Edition
-3. Install the GDPC package:
-   ```
-   pip install gdpc
-   ```
-4. Clone this repository:
-   ```
-   git clone https://github.com/yourusername/procedural-farmhouse-generator.git
-   ```
-
-## Usage
-
-1. Start Minecraft with the GDPC interface mod
-2. Run the generator script:
-   ```
-   python farmhouse_generator.py
-   ```
-3. The script will analyze the terrain, select a suitable location, and generate a unique farmhouse
-
-## Configuration
-
-You can modify the following parameters in the script:
-- Build area size (default: 100x100 blocks)
-- Dimension ranges for width, depth, and height
-- Material selection pools for foundations and walls
-- Interior and exterior decoration options
+| Parameter | Current setting |
+|-----------|-----------------|
+| House width | 10–20 blocks |
+| House depth | 8–16 blocks |
+| Wall height | 4–8 blocks |
+| Roof | Glass |
+| Foundation and walls | Randomly selected material palettes |
+| Washroom footprint | 5 × 4 blocks |
+| Washroom position | Left or right |
+| Garden depth | 4 blocks |
+| Connecting path | Cobblestone |
 
 ## Screenshots
 
-The repository includes several screenshots showing:
-- Front view of generated farmhouses
-- Interior views showing furnishings
-- Back views showing garden areas
-- Top views demonstrating roof transparency
+### Interior
+
+![Farmhouse interior](inside%20%281%29.png)
+
+### Overhead View
+
+![Overhead view](top%20%281%29.png)
+
+Additional screenshots show exterior, rear, and interior views.
+
+## Requirements
+
+- Minecraft Java Edition.
+- A compatible GDMC HTTP Interface mod.
+- Python and a compatible GDPC release.
+- A running Minecraft world with a configured build area.
+
+Refer to the official setup documentation:
+
+- [GDPC installation](https://gdpc.readthedocs.io/en/stable/getting-started/installation.html)
+- [GDMC HTTP Interface](https://github.com/Niels-NTG/gdmc_http_interface)
+
+## Installation
+
+```bash
+git clone https://github.com/Praneeth-496/Procedural-Farmhouse-Generator-for-Minecraft.git
+cd Procedural-Farmhouse-Generator-for-Minecraft
+python -m pip install gdpc
+```
+
+## Usage
+
+1. Launch Minecraft with the compatible interface mod.
+2. Open a test world or a backup copy.
+3. Configure the build area using your installed mod's build-area command.
+4. Allow space for the house, washroom, garden, and path.
+5. Run:
+
+```bash
+python mypcg.py
+```
+
+The script prints the selected dimensions, materials, location, and construction progress.
+
+**The generator clears and replaces blocks in the world.**
+
+## Customization
+
+Edit `mypcg.py` to adjust:
+
+| Setting | Location |
+|---------|----------|
+| House dimensions | `main()` |
+| Foundation and wall palettes | `FOUNDATION_OPTIONS`, `WALL_OPTIONS` |
+| Allowed terrain blocks | `find_flattest_spot()` |
+| Interior layout | `furnish_interior()` |
+| Washroom placement and dimensions | `build_washroom()` |
+| Garden flowers | `add_flower_garden()` |
+| Connecting path | `build_path()` |
+
+For repeatable random choices, add the following before generation:
+
+```python
+random.seed(42)
+```
+
+Matching the complete output also requires the same initial terrain and build area.
+
+## Repository Contents
+
+| File | Description |
+|------|-------------|
+| `mypcg.py` | Terrain analysis and structure generation |
+| `Praneeth__s4174089_Modern_AI_1_Report.pdf` | Project report |
+| PNG screenshots | Examples of generated structures |
+| `README.md` | Project documentation |
+
+## Current Limitations
+
+- Placement checks cover the main house footprint; the washroom, garden, and path may extend beyond the build area.
+- Terrain adaptation uses heuristics, and the fallback location is not validated.
+- Clearing height is fixed at six blocks even when taller walls are selected.
+- Some block identifiers and multi-block object states require validation against the chosen Minecraft version.
+- The TV, sink, and toilet are decorative block arrangements.
+- Dependency and Minecraft versions are not pinned.
+
+## Future Improvements
+
+- Validate the entire compound footprint before construction.
+- Improve terrain support and boundary handling.
+- Add configurable seeds and architectural themes.
+- Introduce alternative roofs, room layouts, and landscaping.
+- Validate block identifiers and placement states automatically.
 
 ## Author
 
-Praneeth Dathu
+[Praneeth Dathu](https://github.com/Praneeth-496)
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+Developed for the Modern Game AI course at Leiden University.
 
 ## Acknowledgments
 
-- Modern Game AI course at Leiden University
-- GDPC development team for their Minecraft interface tools
-
+- GDPC contributors.
+- GDMC HTTP Interface contributors.
